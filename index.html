@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<!--
+	Copyright The containerd Authors
+
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+-->
+<!-- Self-forked from https://github.com/AkihiroSuda/lima-website-draft/blob/bde5ce94abe5aef0e60870e8d95194b04c204bc3/index.html -->
+<html>
+<script>
+	const ghRepoUrl = ((ghRepo) => `https://github.com/${ghRepo}`);
+	const baseUrl = ((ghRepo, ghRef) => `${ghRepoUrl(ghRepo)}/blob/${ghRef}/`);
+	// raw.githubusercontent.com has `access-control-allow-origin: *`
+	const contentBaseUrl = ((ghRepo, ghRef) => `https://raw.githubusercontent.com/${ghRepo}/${ghRef}/`);
+	const sources = [
+		{
+			"name": "containerd",
+			"ghRepo": "containerd/containerd",
+			"ghRef": "main",
+			"files": [
+				"README.md",
+				"ADOPTERS.md",
+				"BUILDING.md",
+				"RELEASES.md",
+				"ROADMAP.md",
+				"SCOPE.md",
+				"code-of-conduct.md",
+				"docs/PLUGINS.md",
+				"docs/RUNC.md",
+				"docs/client-opts.md",
+				"docs/content-flow.md",
+				"docs/garbage-collection.md",
+				"docs/getting-started.md",
+				"docs/hosts.md",
+				"docs/managed-opt.md",
+				"docs/namespaces.md",
+				"docs/ops.md",
+				"docs/remote-snapshotter.md",
+				"docs/rootless.md",
+				"docs/stream_processors.md",
+				"docs/tracing.md",
+
+				"docs/snapshotters/README.md",
+				"docs/snapshotters/devmapper.md",
+			],
+		},
+		{
+			"name": "CRI plugin",
+			"ghRepo": "containerd/containerd",
+			"ghRef": "main",
+			"files": [
+				"docs/cri/architecture.md",
+				"docs/cri/config.md",
+				"docs/cri/decryption.md",
+				// "docs/cri/installation.md" is deprecated
+				// "docs/cri/registry.md" is deprecated
+				"docs/cri/testing.md",
+			],
+		},
+		{
+			"name": "nerdctl",
+			"ghRepo": "containerd/nerdctl",
+			"ghRef": "main",
+			"files": [
+				"README.md",
+				"SECURITY.md",
+				"docs/build.md",
+				"docs/builder-debug.md",
+				"docs/cni.md",
+				"docs/compose.md",
+				"docs/config.md",
+				"docs/cosign.md",
+				"docs/dir.md",
+				"docs/experimental.md",
+				"docs/faq.md",
+				"docs/freebsd.md",
+				"docs/gpu.md",
+				"docs/ipfs.md",
+				"docs/multi-platform.md",
+				"docs/nydus.md",
+				"docs/ocicrypt.md",
+				"docs/overlaybd.md",
+				"docs/registry.md",
+				"docs/rootless.md",
+				"docs/stargz.md",
+			],
+		},
+		{
+			"name": "Stargz Snapshotter",
+			"ghRepo": "containerd/stargz-snapshotter",
+			"ghRef": "main",
+			"files": [
+				"README.md",
+				"docs/INSTALL.md",
+				"docs/ctr-remote.md",
+				"docs/estargz.md",
+				"docs/integration.md",
+				"docs/ipfs.md",
+				"docs/overview.md",
+				"docs/pre-converted-images.md",
+				"docs/smaller-estargz.md",
+				"docs/stargz-estargz.md",
+				"docs/verification.md",
+			],
+		},
+		{
+			"name": "Nydus Snapshotter",
+			"ghRepo": "containerd/nydus-snapshotter",
+			"ghRef": "main",
+			"files": [
+				"README.md",
+				"docs/configure_nydus.md",
+				"docs/crictl_dry_run.md",
+			],
+		},
+		{
+			"name": "OverlayBD Snapshotter",
+			"ghRepo": "containerd/overlaybd",
+			"ghRef": "main",
+			"files": [
+				"README.md",
+				"docs/cache.md",
+			],
+		},
+	];
+</script>
+
+<head>
+	<title>containerd</title>
+	<meta charset="utf-8" />
+	<link rel="shortcut icon" href="https://containerd.io/favicon.png" type="image/png" />
+	<style>
+		code,
+		pre {
+			background-color: #eee;
+			font: monospace;
+		}
+
+		pre {
+			border: solid;
+			padding: 10px;
+		}
+
+		table,
+		th,
+		td {
+			border: solid;
+			border-collapse: collapse;
+			padding: 5px;
+		}
+
+		blockquote {
+			border: dashed;
+			padding: 5px;
+		}
+
+		header h1 {
+			display: none;
+		}
+
+		body>hr {
+			border-top: solid black 5px;
+		}
+
+		.md-3col {
+			display: flex;
+		}
+
+		#md-main-left {
+			width: 15vw;
+			overflow-x: scroll;
+		}
+
+		#md-main-middle {
+			width: 75vw;
+		}
+
+		#md-main-right {
+			width: 10vw;
+			overflow-x: scroll;
+		}
+
+		#md-filename {
+			font-size: 150%;
+			margin-bottom: 20px;
+		}
+
+		#md-content {
+			border: solid black;
+			padding: 30px;
+			overflow-y: scroll;
+			height: 100vh;
+		}
+
+		.md-error {
+			color: red;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+
+		<h1>containerd</a></h1>
+		<div id="md-logo">
+			<a href="?file=README.md">
+				<img src="https://cncf-branding.netlify.app/img/projects/containerd/horizontal/black/containerd-horizontal-black.svg"
+					style="height: 100px;" />
+			</a>
+			<iframe
+				src="https://ghbtns.com/github-btn.html?user=containerd&repo=containerd&type=star&count=true&size=large"
+				frameborder="0" scrolling="0" width="170" height="30"
+				title="GitHub stars of containerd/containerd"></iframe>
+			<a href="https://twitter.com/@containerd">[Twitter]</a>
+			<a href="https://slack.containerd.io/">[Slack]</a>
+		</div> <!-- /md-logo -->
+		<div class="md-error">
+			<p>
+				This site is a <a href="https://github.com/AkihiroSuda/containerd-website-draft">draft proposal</a> to
+				update <a href="https://containerd.io">https://containerd.io</a>.
+				The URL, the design, and the contents are subject to change.
+			</p>
+			<p>Visit the official site <a href="https://containerd.io">https://containerd.io</a> and
+				the
+				official repo: <a
+					href="https://github.com/containerd/containerd">https://github.com/containerd/containerd</a>
+			</p>
+		</div><!-- /md-error -->
+	</header>
+	<hr />
+	<div class="md-3col">
+		<nav id="md-main-left">
+			<h4><a href="?ghRepo=containerd/containerd&file=docs/getting-started.md">Getting Started</a></h4>
+			<h4><a href="https://github.com/containerd">Projects</a></h4>
+			<div id="md-files">Loading...<noscript class="md-error">ERROR: JavaScript is disabled</noscript></div>
+		</nav> <!-- /md-main-left -->
+		<article id="md-main-middle">
+			<div id="md-filename"></div>
+			<div id="md-content">
+				<p>containerd: The universal container runtime.</p>
+				<div id="md-content-loading">
+					<p>Loading...<noscript class="md-error">ERROR: JavaScript is disabled</noscript></p>
+				</div><!-- /md-content-loading -->
+			</div> <!-- /md-content -->
+			<p>
+				If the content is not shown, visit: <a
+					href="https://github.com/containerd">https://github.com/containerd</a>
+			</p>
+		</article> <!-- /md-main-middle -->
+		<nav id="md-main-right">
+			<h4>Contents</h4>
+			<div id="md-toc">Loading...<noscript class="md-error">ERROR: JavaScript is disabled</noscript></div>
+		</nav>
+	</div> <!-- /md-main-2col-->
+	<hr />
+	<footer>
+		<p><strong>We are a <a href="https://cncf.io/">Cloud Native Computing Foundation</a> Graduated project.</strong>
+		</p>
+		<img src="https://www.cncf.io/wp-content/uploads/2022/07/cncf-color-bg.svg" width=300 />
+		<p>The Linux Foundation® (TLF) has registered trademarks and uses trademarks.For a list of TLF trademarks,
+			see <a href="https://www.linuxfoundation.org/trademark-usage/">Trademark Usage</a>.</p>
+	</footer>
+</body>
+
+<!-- marked: MIT License: https://github.com/markedjs/marked/blob/v4.2.3/LICENSE.md -->
+<script src="https://cdn.jsdelivr.net/npm/marked@v4.2.3/marked.min.js"></script>
+<!-- DOMPurify: Apache License 2.0: https://github.com/cure53/DOMPurify/blob/2.4.1/LICENSE -->
+<script src="https://cdn.jsdelivr.net/gh/cure53/DOMPurify@2.4.1/dist/purify.min.js"></script>
+<script>
+	const render = function (ghRepo, file) {
+		let currentSrc;
+		const filesE = document.getElementById("md-files");
+		let filesEInner = "";
+		for (let i = 0; i < sources.length; i++) {
+			const f = sources[i];
+			if (f.ghRepo == ghRepo) currentSrc = f;
+			let detailsOpen = false;
+			let lili = "";
+			for (let j = 0; j < f.files.length; j++) {
+				const g = f.files[j];
+				let li = "<li>";
+				if (f.ghRepo == ghRepo && g == file) {
+					detailsOpen = true;
+					li += `<strong><code>${g}</code></strong>`;
+				}
+				else li += `<code><a href="?repo=${f.ghRepo.split("/").pop()}&file=${g}">${g}</a></code>`;
+				li += "</li>";
+				lili += li;
+			}
+			filesEInner += `<details ${detailsOpen ? "open" : ""}><summary>${f.name}</summary><ul>` + lili;
+			filesEInner += `<li><a href="${ghRepoUrl(ghRepo)}">More...</a></li>`
+			filesEInner += "</ul></details>";
+		}
+		filesE.innerHTML = filesEInner;
+		if (file.startsWith("..")) throw new Error(`invalid file "${file}"`);
+		const fileAbs = new URL(file, baseUrl(ghRepo, currentSrc.ghRef)).href;
+		const contentAbs = new URL(file, contentBaseUrl(ghRepo, currentSrc.ghRef)).href;
+		const filenameE = document.getElementById("md-filename");
+		filenameE.innerHTML = `<code>${file}</code> (<a href="${fileAbs}"><code>${fileAbs}</code></a>)`;
+		const contentE = document.getElementById("md-content");
+		contentE.innerHTML = `Loading <code><a href="${fileAbs}">${fileAbs}</a></code> ...`
+			+ ` (from <code><a href="${contentAbs}">${contentAbs}</a></code>)`;
+
+		const walkTokens = async (token) => {
+			if (token.type === "image" && !token.href.includes("://")) {
+				token.href = new URL(token.href, contentBaseUrl(ghRepo, currentSrc.ghRef)).href;
+			}
+		};
+		const req = new Request(contentAbs);
+		fetch(req)
+			.then((resp) => {
+				if (!resp.ok) {
+					console.log(resp);
+					const error = `${resp.status} (${resp.type}) for ${resp.url}`;
+					throw new Error(error);
+				}
+				return resp.blob()
+			})
+			.then(async (blob) => {
+				const text = await blob.text();
+				let mdHTMLStr = DOMPurify.sanitize(marked.parse(text, { baseUrl: baseUrl(ghRepo, currentSrc.ghRef), walkTokens: walkTokens }));
+				contentE.innerHTML = mdHTMLStr;
+				const mdHTML = (new DOMParser).parseFromString(mdHTMLStr, "text/html");
+				const selected = mdHTML.querySelectorAll("h2");
+				const tocE = document.getElementById("md-toc");
+				let ul = "<ul>";
+				for (let i = 0; i < selected.length; i++) {
+					const f = selected[i];
+					let li = `<li><a href="#${f.id}">${f.innerText}</a></li>`;
+					ul += li;
+				}
+				ul += "</ul>";
+				tocE.innerHTML = ul;
+				return blob;
+			})
+			.catch((error) => {
+				contentE.innerHTML += `<div class="md-error">${error}</div>` +
+					`<p>Please visit <code><a href="${fileAbs}">${fileAbs}</a></code> directly.</p>`;
+			});
+	};
+	window.onload = function () {
+		const params = (new URL(document.location)).searchParams
+		let repoShort = params.get("repo");
+		if (!repoShort) repoShort = "containerd";
+		let file = params.get("file");
+		if (!file) file = "README.md";
+		render("containerd/" + repoShort, file);
+	};
+</script>
+
+</html>
